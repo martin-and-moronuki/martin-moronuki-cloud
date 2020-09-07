@@ -4,10 +4,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
+import qualified Data.Text as T
 import Relude
 import System.Environment
 import System.Process
-import qualified Data.Text as T
 
 main :: IO ()
 main = buildNixos >>= \nixos -> copy host nixos *> setProfile host nixos *> switch host

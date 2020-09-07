@@ -70,7 +70,6 @@ gitHubRequest owner repo branch =
     & setRequestPath (encodeUtf8 $ foldMap ("/" <>) ["repos", owner, repo, "branches", branch])
     & addRequestHeader hUserAgent (encodeUtf8 gitHubUserAgent)
 
--- https://developer.github.com/v3/#user-agent-required
 gitHubUserAgent :: Text
 gitHubUserAgent = "github.com/martin-and-moronuki/martin-moronuki-cloud"
 
