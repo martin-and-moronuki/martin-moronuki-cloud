@@ -10,12 +10,13 @@ import System.Environment
 import System.Process
 
 main :: IO ()
-main = buildNixos >>= \nixos -> copy host nixos *> setProfile host nixos *> switch host
-  where
-    host = "chris-martin.org"
+main = build >>= deploy "chris-martin.org"
 
-buildNixos :: IO Text
-buildNixos = T.strip . toText <$> readProcess "nix-build" ["nixos.nix"] ""
+build :: IO Text
+build = T.strip . toText <$> readProcess "nix-build" ["nixos.nix", "--no-out-link"] ""
+
+deploy :: Text -> Text -> IO ()
+deploy host nixos = copy host nixos *> setProfile host nixos *> switch host
 
 copy :: Text -> Text -> IO ()
 copy host nixos = callProcess "nix-copy-closure" ["--use-substitutes", "--to", toString $ "ssh://" <> host, toString nixos]
