@@ -15,6 +15,7 @@ import Network.HTTP.Types.Header
 import Optics
 import Relude
 import System.Process
+import qualified Data.HashMap.Lazy as HashMap
 
 main :: IO ()
 main = read file >>= either fail pure >>= traverse update >>= write file
@@ -40,7 +41,7 @@ updateRev x = setRev <$> getRev <*> pure x
     s k = forceKey k _String x
 
 setRev :: Text -> Value -> Value
-setRev x = set (key "rev") (review _String x)
+setRev x = over _Object (HashMap.insert "rev" (review _String x))
 
 updateHash :: Value -> IO Value
 updateHash x = setHash <$> getHash <*> pure x
@@ -50,7 +51,7 @@ updateHash x = setHash <$> getHash <*> pure x
     s k = forceKey k _String x
 
 setHash :: Text -> Value -> Value
-setHash x = set (key "sha256") (review _String x)
+setHash x = over _Object (HashMap.insert "sha256" (review _String x))
 
 nixPrefetchUrl :: Text -> IO Text
 nixPrefetchUrl url = T.strip . toText <$> readProcess "nix-prefetch-url" ["--unpack", toString url] ""
