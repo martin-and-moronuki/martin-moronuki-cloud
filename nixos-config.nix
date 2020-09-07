@@ -1,0 +1,41 @@
+{ nixpkgs, pkgs, ... }:
+{
+    ec2.hvm = true;
+    environment.systemPackages = with pkgs; [ ccze cloud-utils curl fish git htop lsof openssl tmux tree vim wget which ];
+    imports = [ "${nixpkgs}/nixos/modules/virtualisation/amazon-image.nix" ];
+    networking.firewall.allowedTCPPorts = [ 22 ];
+    networking.firewall.allowPing = true;
+    networking.hostName = "martin-moronuki";
+    nix.binaryCaches = [ "https://cache.nixos.org" "https://chris-martin.cachix.org" ];
+    nix.binaryCachePublicKeys = [ "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" "chris-martin.cachix.org-1:O/29OCGL8P7qk/NmEaZzzZk3DDmUfa9nGA74OrX9/1g=" ];
+    nix.gc.automatic = true;
+    nix.gc.options = "--delete-older-than 30d";
+    nix.trustedUsers = [ "@wheel" ];
+    security.acme.acceptTerms = true;
+    security.acme.email = "ch.martin@gmail.com";
+    security.sudo.wheelNeedsPassword = false;
+    services.nginx.enable = true;
+    services.nginx.recommendedGzipSettings = true;
+    services.nginx.recommendedOptimisation = true;
+    services.nginx.recommendedProxySettings = true;
+    services.nginx.recommendedTlsSettings = true;
+    services.nginx.virtualHosts."chris-martin.org".enableACME = true;
+    services.nginx.virtualHosts."chris-martin.org".forceSSL = true;
+    services.nginx.virtualHosts."chris-martin.org".locations."/".root = "/var/www/chris-martin.org";
+    services.nginx.virtualHosts."chris-martin.org".locations."/".index = "index.html";
+    services.nginx.virtualHosts."chris-martin.org".locations."/".extraConfig = "default_type text/html; types { application/x-javascript js; image/gif gif; image/jpeg jpeg jpg; image/png png; image/svg+xml svg; image/x-icon ico; text/css css; text/html html; text/xml xml rss; }";
+    services.openssh.enable = true;
+    services.openssh.passwordAuthentication = false;
+    system.stateVersion = pkgs.lib.mkDefault "19.03";
+    time.timeZone = "America/Denver";
+    users.users.chris.description = "Chris Martin";
+    users.users.chris.extraGroups = [ "wheel" ];
+    users.users.chris.isNormalUser = true;
+    users.users.chris.openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDAu0nM8baJOgaBB44w/rCczNK7pST0b/B3isYtqYw8QI2nqkmp4zddAFTjqL/zyVgIC+I2iIINVdQrC6jRWWZc82VRBzHjUtcz3sPppkLvZvfVupSXli1bDtnKNLA73bGr+odZFyR2zWsgcPwpGkzaWotGVhsW/F/2J+6HwG/D+9pWTlFAPwK/OV2J3axdnWWcihXjMIWT5/5ksOPqQWUBQnrQDQt2Rtw+3Qg36UlAOQgj2SMmMg6ppf8k0A7WRVqGxJE0BrZwUfvfqmUidPOsitkUphOtM424+HyXv66bDdLr80apPCqrwllHv0tt4N6vWVQg5OeKQe2w4NvIjQlR1ROf3MC3/1itiGvo5saEUh0DtQrl/g9LGXmIkVHFzJsmfnIx74VXH9MESugHturxniB+8Rq7ICg4eWZAal46tgcMdOm7u313fm5HpumQRwqTWcghXWRmOopqDNzXT2CEOJ6gzJS50E9SI65Y501NTtXwBgQIyOSt5wp2edBdxZUIEj4yGBBaVwDREbuR0mEMNnEmWyd7DsyOzKnFCsb5fwm77S5uSISzbzy2boVyb/zBEFRAorYNIaWRPX+a9aN5Kki+xCIsfMhVBFxSc5PMVrn/a05pYg9eb0jJoWmeBCXVLxOitSX0UrpNMw9yd1Jrgv6wVe5wr5kiIad2ooxQvQ== cubby-1" ];
+    users.users.chris.uid = 1000;
+    users.users.julie.description = "Julie Moronuki";
+    users.users.julie.extraGroups = [ "wheel" ];
+    users.users.julie.isNormalUser = true;
+    users.users.julie.openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCYvVsYGzkmlh0/C+7X5Uwe9NY3gUrd+5OfK72HJAqZJYAl/PCedgS/5c1Ncn+Yf0gr/UycFwitkZaP2OmPofcERg1JmHqCaLLsR48kZKZFYwGpCBWDH/cyoh3gYDhyJHj4I/bS75M0W48KTb8wiNRvfrMQ5T8XZ+PJprzz/cjNKkx1guUWGkwxFrfO8nb9YFK6Q5FDrk4O7C2hSKAAzfmMMj6F/htm4XVsr0g3ZBfq6TOWmpgKqKb6BMGhby10wDU2TWgWFyW61h1mld03ufZBHcOrGFEf3yx0IcmLW3Yd9a0obJEAIzrmAGi6+Kr/84xy3DNLBv6dwGqXZ62IErb5 julie@doriangray" ];
+    users.users.julie.uid = 1004;
+}
