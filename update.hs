@@ -1,20 +1,20 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i runhaskell shell.nix
 
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
-import           Data.Aeson
-import           Data.Aeson.Encode.Pretty
-import qualified Data.Aeson.Encode.Pretty  as AP
-import           Data.Aeson.Optics
-import qualified Data.ByteString.Lazy      as LBS
-import qualified Data.Text                 as T
-import           Network.HTTP.Simple
-import           Network.HTTP.Types.Header
-import           Optics
-import           Relude
-import           System.Process
+import Data.Aeson
+import Data.Aeson.Encode.Pretty
+import qualified Data.Aeson.Encode.Pretty as AP
+import Data.Aeson.Optics
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.Text as T
+import Network.HTTP.Simple
+import Network.HTTP.Types.Header
+import Optics
+import Relude
+import System.Process
 
 main :: IO ()
 main = read file >>= either fail pure >>= traverse update >>= write file
@@ -27,36 +27,42 @@ read = eitherDecodeFileStrict
 write :: FilePath -> (Map Text Value) -> IO ()
 write file = LBS.writeFile file . encodePretty' conf
   where
-    conf = AP.defConfig{ AP.confIndent = AP.Spaces 2, AP.confTrailingNewline = True }
+    conf = AP.defConfig {AP.confIndent = AP.Spaces 2, AP.confTrailingNewline = True}
 
 update :: Value -> IO Value
 update = updateRev >=> updateHash
 
 updateRev :: Value -> IO Value
-updateRev x =
-    forceKey "owner" _String x >>= \owner ->
-    forceKey "repo" _String x >>= \repo ->
-    forceKey "branch" _String x >>= \branch ->
-    httpJSON (gitHubRequest owner repo branch) >>= \response ->
-    gitHubResponseRev response >>= \rev ->
-    pure (x & set (key "rev") (review _String rev))
+updateRev x = setRev <$> getRev <*> pure x
+  where
+    request = gitHubRequest <$> s "owner" <*> s "repo" <*> s "branch"
+    getRev = request >>= httpJSON >>= gitHubResponseRev
+    s k = forceKey k _String x
+
+setRev :: Text -> Value -> Value
+setRev x = set (key "rev") (review _String x)
 
 updateHash :: Value -> IO Value
-updateHash x =
-    forceKey "owner" _String x >>= \owner ->
-    forceKey "repo" _String x >>= \repo ->
-    forceKey "rev" _String x >>= \rev ->
-    nixPrefetchUrl (gitHubArchive owner repo rev) >>= \hash ->
-    pure (x & set (key "sha256") (review _String (toText hash)))
+updateHash x = setHash <$> getHash <*> pure x
+  where
+    url = gitHubArchive <$> s "owner" <*> s "repo" <*> s "rev"
+    getHash = url >>= nixPrefetchUrl
+    s k = forceKey k _String x
+
+setHash :: Text -> Value -> Value
+setHash x = set (key "sha256") (review _String x)
 
 nixPrefetchUrl :: Text -> IO Text
 nixPrefetchUrl url = T.strip . toText <$> readProcess "nix-prefetch-url" ["--unpack", toString url] ""
 
 gitHubRequest :: Text -> Text -> Text -> Request
-gitHubRequest owner repo branch = defaultRequest
-    & setRequestCheckStatus & setRequestSecure True & setRequestPort 443
+gitHubRequest owner repo branch =
+  defaultRequest
+    & setRequestCheckStatus
+    & setRequestSecure True
+    & setRequestPort 443
     & setRequestHost (encodeUtf8 ("api.github.com" :: Text))
-    & setRequestPath (encodeUtf8 $ foldMap ("/" <> ) ["repos", owner, repo, "branches", branch])
+    & setRequestPath (encodeUtf8 $ foldMap ("/" <>) ["repos", owner, repo, "branches", branch])
     & addRequestHeader hUserAgent (encodeUtf8 gitHubUserAgent)
 
 -- https://developer.github.com/v3/#user-agent-required
@@ -67,7 +73,8 @@ gitHubResponseRev :: Response Value -> IO Text
 gitHubResponseRev = forceKey' ["commit", "sha"] _String . getResponseBody
 
 gitHubArchive :: Text -> Text -> Text -> Text
-gitHubArchive owner repo rev = "https://github.com" <> foldMap ("/" <> ) [owner, repo, "archive", rev <> ".tar.gz"]
+gitHubArchive owner repo rev =
+  "https://github.com" <> foldMap ("/" <>) [owner, repo, "archive", rev <> ".tar.gz"]
 
 forceKey :: Text -> Prism' Value a -> Value -> IO a
 forceKey k p v = orErr $ preview (key k % p) v
