@@ -19,10 +19,10 @@ deploy :: Text -> Text -> IO ()
 deploy host nixos = copy host nixos *> setProfile host nixos *> switch host
 
 copy :: Text -> Text -> IO ()
-copy host nixos = callProcess "nix-copy-closure" ["--use-substitutes", "--to", toString $ "ssh://" <> host, toString nixos]
+copy host nixos = callProcess "nix-copy-closure" ["-v", "--use-substitutes", "--to", toString host, toString nixos]
 
 setProfile :: Text -> Text -> IO ()
-setProfile host nixos = callProcess "ssh" [toString host, "nix-env", "--profile", "/nix/var/nix/profiles/system", "--set", toString nixos]
+setProfile host nixos = callProcess "ssh" [toString host, "sudo", "nix-env", "--profile", "/nix/var/nix/profiles/system", "--set", toString nixos]
 
 switch :: Text -> IO ()
 switch host = callProcess "ssh" [toString host, "sudo", "/nix/var/nix/profiles/system/bin/switch-to-configuration", "switch"]
