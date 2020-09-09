@@ -3,7 +3,7 @@
     ec2.hvm = true;
     environment.systemPackages = with pkgs; [ ccze cloud-utils curl fish git htop lsof openssl tmux tree vim wget which ];
     imports = [ "${nixpkgs}/nixos/modules/virtualisation/amazon-image.nix" ];
-    networking.firewall.allowedTCPPorts = [ 22 80 443 ];
+    networking.firewall.allowedTCPPorts = [ 80 443 36411 ];
     networking.firewall.allowPing = true;
     networking.hostName = "martin-moronuki";
     nix.binaryCaches = [ "https://cache.nixos.org" "https://chris-martin.cachix.org" ];
@@ -28,6 +28,7 @@
     };
     services.openssh.enable = true;
     services.openssh.passwordAuthentication = false;
+    services.openssh.ports = [ 36411 ];
     system.stateVersion = pkgs.lib.mkDefault "19.03";
     time.timeZone = "America/Denver";
     users.users.chris = {

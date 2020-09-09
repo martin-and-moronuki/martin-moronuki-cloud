@@ -5,6 +5,7 @@ let
 
     nixpkgs = import (resolve versionData.nixpkgs) {};
     versionData = fromJSON (readFile ./versions.json);
+    versions = mapAttrs (_: resolve) versionData;
 
     resolve = { owner, repo, rev, sha256, ... }: builtins.fetchTarball {
         url = "https://github.com/${owner}/${repo}/tarball/${rev}";
@@ -12,4 +13,4 @@ let
     };
 
 in
-    mapAttrs (_: resolve) (fromJSON (readFile ./versions.json))
+    versions
