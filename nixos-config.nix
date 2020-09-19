@@ -24,7 +24,7 @@
         forceSSL = true;
         locations."/".root = "/var/www/chris-martin.org";
         locations."/".index = "index.html";
-        locations."/".extraConfig = "default_type text/html; types { application/x-javascript js; image/gif gif; image/jpeg jpeg jpg; image/png png; image/svg+xml svg; image/x-icon ico; text/css css; text/html html; text/xml xml rss; }";
+        locations."/".extraConfig = ''default_type text/html;'';
     };
     services.openssh.enable = true;
     services.openssh.passwordAuthentication = false;
