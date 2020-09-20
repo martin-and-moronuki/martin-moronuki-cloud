@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -i runhaskell shell.nix
+#! nix-shell -i "runhaskell -no-user-package-db" shell.nix
 
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
