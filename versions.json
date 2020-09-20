@@ -1,10 +1,10 @@
 {
   "nixpkgs": {
-    "lastUpdated": "2020-09-07",
+    "lastUpdated": "2020-09-19",
     "owner": "NixOS",
     "branch": "nixos-20.03",
     "repo": "nixpkgs-channels",
-    "sha256": "1gfjaa25nq4vprs13h30wasjxh79i67jj28v54lkj4ilqjhgh2rs",
-    "rev": "51d115ac89d676345b05a0694b23bd2691bf708a"
+    "sha256": "028bq6gwhp5nbvl2m7fxzdan195ajnk99rqw93k1mxgpr8c449ic",
+    "rev": "985047d3c9fb16bb05bc8cde7d2a1a703f670eae"
   }
 }
