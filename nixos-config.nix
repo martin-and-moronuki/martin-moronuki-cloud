@@ -26,6 +26,13 @@
         locations."/".index = "index.html";
         locations."/".extraConfig = ''default_type text/html;'';
     };
+    services.nginx.virtualHosts."jarclasses.com" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".root = "/var/www/jarclasses.com";
+        locations."/".index = "index.html";
+        locations."/".extraConfig = ''try_files $uri $uri.html /index.html =404;'';
+    };
     services.openssh.enable = true;
     services.openssh.passwordAuthentication = false;
     services.openssh.ports = [ 36411 ];
