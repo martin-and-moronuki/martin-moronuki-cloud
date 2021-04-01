@@ -30,8 +30,9 @@
         enableACME = true;
         forceSSL = true;
         locations."/".root = "/var/www/jarclasses.com";
-        locations."/".index = "index.html";
-        locations."/".extraConfig = ''try_files $uri $uri.html /index.html =404;'';
+        locations."/".extraConfig = ''
+            try_files $uri $uri.html $uri/index.html =404;
+        '';
     };
     services.openssh.enable = true;
     services.openssh.passwordAuthentication = false;
