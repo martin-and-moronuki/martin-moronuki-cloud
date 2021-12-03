@@ -34,6 +34,14 @@
             try_files $uri $uri.html $uri/index.html =404;
         '';
     };
+    services.nginx.virtualHosts."mountain.wedding" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".root = "/var/www/mountain.wedding";
+        locations."/".extraConfig = ''
+            try_files $uri $uri.html $uri/index.html =404;
+        '';
+    };
     services.openssh.enable = true;
     services.openssh.passwordAuthentication = false;
     services.openssh.ports = [ 36411 ];
