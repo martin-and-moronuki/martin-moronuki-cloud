@@ -41,14 +41,14 @@
             proxy_pass http://unix:/run/mountain-wedding.socket;
         '';
     };
-    services.nginx.virtualHosts."static.mountain.wedding" = {
+    /* services.nginx.virtualHosts."static.mountain.wedding" = {
         enableACME = true;
         forceSSL = true;
         locations."/".root = "/var/www/mountain.wedding/static";
         locations."/".extraConfig = ''
             try_files $uri $uri.html $uri/index.html =404;
         '';
-    };
+    }; */
     services.openssh.enable = true;
     services.openssh.passwordAuthentication = false;
     services.openssh.ports = [ 36411 ];
