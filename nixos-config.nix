@@ -1,7 +1,7 @@
 { nixpkgs, pkgs, ... }:
 {
     ec2.hvm = true;
-    environment.systemPackages = with pkgs; [ ccze cloud-utils curl fish git htop lsof openssl tmux tree vim wget which ];
+    environment.systemPackages = with pkgs; [ ccze cloud-utils curl fish git htop killall lsof openssl tmux tree vim wget which ];
     imports = [ "${nixpkgs}/nixos/modules/virtualisation/amazon-image.nix" ];
     networking.firewall.allowedTCPPorts = [ 80 443 36411 ];
     networking.firewall.allowPing = true;
