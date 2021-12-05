@@ -37,7 +37,14 @@
     services.nginx.virtualHosts."mountain.wedding" = {
         enableACME = true;
         forceSSL = true;
-        locations."/".root = "/var/www/mountain.wedding";
+        locations."/".extraConfig = ''
+            proxy_pass http://unix:/run/mountain-wedding.socket;
+        '';
+    };
+    services.nginx.virtualHosts."static.mountain.wedding" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".root = "/var/www/mountain.wedding/static";
         locations."/".extraConfig = ''
             try_files $uri $uri.html $uri/index.html =404;
         '';
@@ -46,6 +53,26 @@
     services.openssh.passwordAuthentication = false;
     services.openssh.ports = [ 36411 ];
     system.stateVersion = pkgs.lib.mkDefault "19.03";
+    systemd.services.mountain-wedding = {
+        enable = true;
+        description = "Mountain Wedding website";
+        wantedBy = ["multi-user.target"];
+        requires = ["mountain-wedding.socket"];
+        environment = {
+            LC_ALL = "en_US.UTF-8";
+            LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
+            MOUNTAIN_WEDDING_DIRECTORY = "/var/www/mountain.wedding";
+        };
+        serviceConfig = {
+            User = "mountain-wedding";
+            Restart = "on-failure";
+            ExecStart = "/var/www/mountain.wedding/bin/mountain-wedding";
+        };
+    };
+    systemd.sockets.mountain-wedding = {
+        wantedBy = ["sockets.target"];
+        socketConfig.ListenStream = "/run/mountain-wedding.socket";
+    };
     time.timeZone = "America/Denver";
     users.users.chris = {
         description = "Chris Martin";
@@ -67,5 +94,11 @@
             "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSnB6dODD8gWA0iaW0PPZSmQbPnevl8TNrq+xbziCeb1H4dizv2dcM9JVpokCPfnt5hn0bp01dpjDgDsMJxCpW4DfUd7/eM1q2EqaJ5wAqy5xhtxlv44xgFfJEjwr2GX/RKS8VOf6OSTGqtCEudpQA+vmQSEW9kdIII/KXjdwj+vn2fX/XwxuvTt9qCnh1TP1mdNjU5ZwSi4Yco++w+THnUFAZ/NP0iZZawLtKIIRRBRLEikRNWtcFDAnTVNE7O9eRlDotmm12qKqzQhDO1HANJ5E+QHOf+zh8Yg2aCwBuKd0Z19zusaCOUUjacuxKY8Lx3LOvpBi7QniicMhfqX/n jdog74@gmail.com"
         ];
         uid = 1004;
+    };
+    users.users.mountain-wedding = {
+        description = "Mountain Wedding website";
+        group = "mountain-wedding";
+        isSystemUser = true;
+        uid = 1005;
     };
 }
