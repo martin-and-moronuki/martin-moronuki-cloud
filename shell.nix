@@ -6,5 +6,5 @@ let
     ];
 in
     pkgs.mkShell {
-        buildInputs = [ haskell ];
+        buildInputs = [ haskell pkgs.nix ];
     }
