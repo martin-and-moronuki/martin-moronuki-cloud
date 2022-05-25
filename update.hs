@@ -1,9 +1,3 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i "runhaskell -no-user-package-db" shell.nix
-
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-
 import Data.Aeson
 import Data.Aeson.Encode.Pretty
 import qualified Data.Aeson.Encode.Pretty as AP
