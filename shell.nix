@@ -6,5 +6,5 @@ let
     ];
 in
     pkgs.mkShell {
-        buildInputs = [ haskell pkgs.cacert pkgs.cabal-install pkgs.nix ];
+        buildInputs = [ haskell pkgs.cacert pkgs.openssh pkgs.cabal-install pkgs.nix ];
     }
