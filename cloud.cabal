@@ -15,3 +15,8 @@ executable deploy
 executable update
     import: base
     main-is: update.hs
+
+executable format
+    import: base
+    main-is: format.hs
+    build-depends: ormolu

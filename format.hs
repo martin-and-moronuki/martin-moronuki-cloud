@@ -1,6 +1,3 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i "runhaskell -no-user-package-db" shell.nix
-
 import qualified Data.ByteString.Lazy as LBS
 import Data.Foldable
 import qualified Data.Text.IO as T
