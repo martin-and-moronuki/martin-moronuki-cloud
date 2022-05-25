@@ -6,5 +6,5 @@ let
     ];
 in
     pkgs.mkShell {
-        buildInputs = [ haskell pkgs.nix ];
+        buildInputs = [ haskell pkgs.cabal-install pkgs.nix ];
     }
