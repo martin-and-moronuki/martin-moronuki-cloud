@@ -8,6 +8,10 @@ common base
     build-depends: aeson, aeson-optics, aeson-pretty, base, bytestring, http-conduit, http-types, optics, process, relude, text, time, unordered-containers
     default-extensions: NoImplicitPrelude OverloadedStrings
 
+executable deploy
+    import: base
+    main-is: deploy.hs
+
 executable update
     import: base
     main-is: update.hs

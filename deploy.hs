@@ -1,9 +1,3 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i "runhaskell -no-user-package-db" shell.nix
-
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-
 import qualified Data.Text as T
 import Relude
 import System.Environment
