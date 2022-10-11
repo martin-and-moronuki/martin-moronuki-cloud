@@ -1,10 +1,10 @@
 {
   "nixpkgs": {
-    "lastUpdated": "2022-05-25",
+    "lastUpdated": "2022-10-10",
     "owner": "NixOS",
     "branch": "nixos-21.11",
     "repo": "nixpkgs",
-    "sha256": "09ffmjs9lwm97p8v8977p319kc8ys2fjnyv08gb99kgbr7gfiyfd",
-    "rev": "cbd40c72b2603ab54e7208f99f9b35fc158bc009"
+    "sha256": "04ffwp2gzq0hhz7siskw6qh9ys8ragp7285vi1zh8xjksxn1msc5",
+    "rev": "eabc38219184cc3e04a974fe31857d8e0eac098d"
   }
 }
